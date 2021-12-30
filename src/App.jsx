@@ -1,22 +1,28 @@
-import { useState, useEffect } from "react";
-import Tarea from "./components/Tarea";
-import TareasContainer from "./components/TareasContainer";
+import { useEffect, useState } from "react";
+import Layout from "./components/Layout";
+import MainForm from "./components/MainForm";
+import Tareas from "./components/Tareas";
+import tareasServicio from "./api/tareas.servicio";
 
 const App = () => {
   const [tareas, setTareas] = useState([]);
 
-  //Voy a buscar las tareas
-  useEffect(() => {
-    fetch("https://jsonplaceholder.typicode.com/todos")
-      .then((response) => response.json())
-      .then((tareas) => setTareas(tareas));
+  //Fetch useEffect
+  useEffect(async () => {
+    try {
+      //Fetch
+      const tareasFromApi = await tareasServicio.fetchTareas();
+
+      //Cambiamos el estado con las tareas del servidor
+      setTareas(tareasFromApi);
+    } catch (error) {}
   }, []);
 
   return (
-    <>
-      <p>Mi otro título</p>
-      <TareasContainer tareas={tareas}></TareasContainer>
-    </>
+    <Layout>
+      <MainForm />
+      <Tareas tareas={tareas} />
+    </Layout>
   );
 };
 export default App;
